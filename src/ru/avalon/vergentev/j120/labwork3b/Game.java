@@ -41,28 +41,19 @@ public class Game extends JFrame implements MouseMotionListener {
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        for (JButton i : button) {
-            if (e.getSource() == i) algorithmIfButtonIsPushed(i);
-        }
+        for (JButton i : button) {if (e.getSource() == i) algorithmIfButtonIsPushed(i);}
     }
     @Override
     public void mouseMoved(MouseEvent e) {}
 
     public void algorithmIfButtonIsPushed (JButton buttonPushed) {
         savingButtonCoordinatesInCollection();
-        searchingForTheEmptyNode();
-        getButtonPushedCoordinates(buttonPushed);
-        //move buttons on discrete positions
-        int mousePositionX = ((int) getMousePosition().getX() / 100) * 100;
-        int mousePositionY = ((int) getMousePosition().getY() / 100) * 100;
-        buttonPushed.setLocation(mousePositionX, mousePositionY);
-//        if (getButtonPushedCoordinates(buttonPushed).equals(searchingForTheEmptyNode())) {
-//
-//        }
-        searchingSurroundingOfEmptyNode();
-
-//        lalala();
-//        System.out.println(xEmpty + ", " + yEmpty);
+        //двигаем кнопки только которые вокруг пустой кнопки
+        if (searchingSurroundingOfEmptyNode().containsValue(getButtonPushedCoordinates(buttonPushed))) {
+            int mousePositionX = ((int) getMousePosition().getX() / 100) * 100;
+            int mousePositionY = ((int) getMousePosition().getY() / 100) * 100;
+            buttonPushed.setLocation(mousePositionX, mousePositionY);
+        }
     }
 
     public void savingButtonCoordinatesInCollection () {
