@@ -40,9 +40,9 @@ public class Game extends JFrame implements MouseMotionListener {
             button[i].setBackground(new Color(255,255,255));
             button[i].setSize(100, 100);
             button[i].addMouseMotionListener(this);
-//            button[i].setLocation(100, 100);
             add(button[i]);
         }
+        //устанавливаем стартовую позицию расположения кнопок
         button[0].setLocation(0 * button[0].getWidth(), 0 * button[0].getHeight());
         button[1].setLocation(1 * button[1].getWidth(), 0 * button[1].getHeight());
         button[2].setLocation(2 * button[2].getWidth(), 0 * button[2].getHeight());
@@ -105,31 +105,6 @@ public class Game extends JFrame implements MouseMotionListener {
 //        position14.gridx = 0;
 //        position14.gridy = 0;
 
-
-//        add(button[0]);
-//        add(button[1]);
-//        add(button[2]);
-//        add(button[3]);
-//        add(button[4]);
-//        add(button[5]);
-//        add(button[6]);
-//        add(button[7]);
-//        add(button[8]);
-//        add(button[9]);
-//        add(button[10]);
-//        add(button[11]);
-//        add(button[12]);
-//        add(button[13]);
-//        add(button[14]);
-
-//        for (int i = 1; i < 5; i++) {
-//            for (int j = 1; j < 5; j++) {
-//                if (j != 4) {
-//                    button[i*j].setLocation(i * button[i*j].getWidth(), j * button[i*j].getHeight());
-//                    add(button[i*j]);
-//                }
-//            }
-//        }
     }
 
     @Override
@@ -143,18 +118,15 @@ public class Game extends JFrame implements MouseMotionListener {
         getButtonsCollection();
         //двигаем кнопки только которые вокруг пустого узла
         if (availableSurroundingOfEmptyNode().containsValue(getButtonPushedCoordinates(buttonPushed)) && isThereOnlyOneEmptyNode()) {
-            int mousePositionX = ((int) getMousePosition().getX() / 100) * 100;
-            int mousePositionY = ((int) getMousePosition().getY() / 100) * 100;
-            buttonPushed.setLocation(mousePositionX, mousePositionY);
+            moveButtonInDiscretePositions(buttonPushed);
         } else {
             setButtonsByPositions();
+            print();
         }
         if (isGameOver()) {
             gameOver();
         }
-//        print();
     }
-
 
     public HashMap<JButton, HashMap<Integer, Integer>> getButtonsCollection () {
         mapButtons = new HashMap<>();
@@ -164,38 +136,8 @@ public class Game extends JFrame implements MouseMotionListener {
             y = (i.getY()) / i.getHeight();
             coordinates.put(x, y);
             mapButtons.put(i, coordinates);
-//            System.out.println(i.getName());
         }
         return mapButtons;
-    }
-
-    public HashMap<Integer, Integer> searchingForTheEmptyNode () {
-        //формируем коллекцию узлов по аналогии с коллекцией кнопок
-        mapNodes = new HashMap<>();
-        int j = 1;
-        for (int n = 0; n < 4; n++) {             //проходим...
-            for (int m = 0; m < 4; m++) {         //...сетку 4х4
-                coordinates = new HashMap<>();
-                coordinates.put(m, n);
-                mapNodes.put(j, coordinates);            //создаём пару координат в аналогичную коллекцию, что координаты кнопки
-                j++;
-            }
-        }
-        //сравниваем коллекции кнопок и узлов
-        for (Integer i : mapNodes.keySet()) {
-            if (!(mapButtons.containsValue(mapNodes.get(i)))) {
-                return mapNodes.get(i);
-            }
-        }
-        return null;
-    }
-
-    public HashMap<Integer, Integer> getButtonPushedCoordinates (JButton buttonPushed) {
-        coordinates = new HashMap<>();
-        x = (buttonPushed.getX()) / buttonPushed.getWidth();
-        y = (buttonPushed.getY()) / buttonPushed.getHeight();
-        coordinates.put(x, y);
-        return coordinates;
     }
 
     public HashMap<Integer, HashMap<Integer, Integer>> availableSurroundingOfEmptyNode () {
@@ -224,6 +166,35 @@ public class Game extends JFrame implements MouseMotionListener {
         return mapSurrounding;
     }
 
+    public HashMap<Integer, Integer> searchingForTheEmptyNode () {
+        //формируем коллекцию узлов по аналогии с коллекцией кнопок
+        mapNodes = new HashMap<>();
+        int j = 1;
+        for (int n = 0; n < 4; n++) {             //проходим...
+            for (int m = 0; m < 4; m++) {         //...сетку 4х4
+                coordinates = new HashMap<>();
+                coordinates.put(m, n);
+                mapNodes.put(j, coordinates);     //создаём пару координат в аналогичную коллекцию, что координаты кнопки
+                j++;
+            }
+        }
+        //сравниваем коллекции кнопок и узлов
+        for (Integer i : mapNodes.keySet()) {
+            if (!(mapButtons.containsValue(mapNodes.get(i)))) {
+                return mapNodes.get(i);
+            }
+        }
+        return null;
+    }
+
+    public HashMap<Integer, Integer> getButtonPushedCoordinates (JButton buttonPushed) {
+        coordinates = new HashMap<>();
+        x = (buttonPushed.getX()) / buttonPushed.getWidth();
+        y = (buttonPushed.getY()) / buttonPushed.getHeight();
+        coordinates.put(x, y);
+        return coordinates;
+    }
+
     public boolean isThereOnlyOneEmptyNode () {
         Map<JButton, Map<Integer, Integer>> mapButtonsTemp = new HashMap<>();
         for (JButton i : getButtonsCollection().keySet()) {
@@ -234,14 +205,19 @@ public class Game extends JFrame implements MouseMotionListener {
         return mapButtonsTemp.size() == 15;
     }
 
+    public void moveButtonInDiscretePositions (JButton buttonPushed) {
+        //двигаем кнопки только которые вокруг пустого узла
+        int mousePositionX = ((int) getMousePosition().getX() / 100) * 100;
+        int mousePositionY = ((int) getMousePosition().getY() / 100) * 100;
+        buttonPushed.setLocation(mousePositionX, mousePositionY);
+    }
+
     public void setButtonsByPositions () {
-        getButtonsCollection();
         for (JButton i : getButtonsCollection().keySet()) {
             for (Integer j : (getButtonsCollection().get(i)).keySet()) {
                 i.setLocation(j * i.getWidth(), (getButtonsCollection().get(i)).get(j) * i.getHeight());
             }
         }
-        getButtonsCollection();
     }
 
     public HashMap<JButton, HashMap<Integer, Integer>> getGameOverPositions () {
@@ -326,13 +302,13 @@ public class Game extends JFrame implements MouseMotionListener {
 
     public void print () {
         System.out.println("----------------");
-        for (JButton i : getButtonsCollection().keySet()) {
-            System.out.println(getGameOverPositions().get(i));
-        }
-        System.out.println("================");
-        for (JButton i : getButtonsCollection().keySet()) {
-            System.out.println(getButtonsCollection().get(i));
-        }
-        System.out.println(getGameOverPositions().equals(getButtonsCollection()));
+//        for (JButton i : getButtonsCollection().keySet()) {
+//            System.out.println(getGameOverPositions().get(i));
+//        }
+//        System.out.println("================");
+//        for (JButton i : getButtonsCollection().keySet()) {
+//            System.out.println(getButtonsCollection().get(i));
+//        }
+//        System.out.println(getGameOverPositions().equals(getButtonsCollection()));
     }
 }
