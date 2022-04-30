@@ -3,13 +3,14 @@ package ru.avalon.vergentev.j120.labwork3b;
 import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
+import java.time.Year;
 import java.util.*;
 
 public class Game extends JFrame implements MouseMotionListener {
     JButton[] button = new JButton[15];
     String titleOfButton;
-    Map<Integer, Integer> coordinates;
-    Map<Integer, Map<Integer, Integer>> mapButtons, mapNodes;
+    Map<Integer, Integer> coordinates, surrounding;
+    Map<Integer, Map<Integer, Integer>> mapButtons, mapNodes, mapSurrounding;
     int x, y, xEmpty, yEmpty, width, height;
 
     public Game () {
@@ -45,23 +46,26 @@ public class Game extends JFrame implements MouseMotionListener {
         }
     }
     @Override
-    public void mouseMoved(MouseEvent e) {
-
-    }
+    public void mouseMoved(MouseEvent e) {}
 
     public void algorithmIfButtonIsPushed (JButton buttonPushed) {
+        savingButtonCoordinatesInCollection();
+        searchingForTheEmptyNode();
+        getButtonPushedCoordinates(buttonPushed);
         //move buttons on discrete positions
         int mousePositionX = ((int) getMousePosition().getX() / 100) * 100;
         int mousePositionY = ((int) getMousePosition().getY() / 100) * 100;
         buttonPushed.setLocation(mousePositionX, mousePositionY);
-        savingButtonNodesInCollection();
-        searchingForTheEmptyNode();
+//        if (getButtonPushedCoordinates(buttonPushed).equals(searchingForTheEmptyNode())) {
+//
+//        }
+        searchingSurroundingOfEmptyNode();
+
 //        lalala();
 //        System.out.println(xEmpty + ", " + yEmpty);
-
     }
 
-    public void savingButtonNodesInCollection () {
+    public void savingButtonCoordinatesInCollection () {
         mapButtons = new HashMap<>();
         int j = 1;
         for (JButton i : button) {
@@ -75,7 +79,7 @@ public class Game extends JFrame implements MouseMotionListener {
         }
     }
 
-    public void searchingForTheEmptyNode () {
+    public HashMap searchingForTheEmptyNode () {
         //формируем коллекцию узлов по аналогии с коллекцией кнопок
         mapNodes = new HashMap<>();
         int j = 1;
@@ -90,21 +94,56 @@ public class Game extends JFrame implements MouseMotionListener {
         //сравниваем коллекции кнопок и узлов
         for (Integer i : mapNodes.keySet()) {
             if (!(mapButtons.containsValue(mapNodes.get(i)))) {
-                System.out.println(mapNodes.get(i));
+                return (HashMap) mapNodes.get(i);
             }
         }
+        return null;
     }
 
+    public HashMap getButtonPushedCoordinates (JButton buttonPushed) {
+        coordinates = new HashMap<>();
+        x = (buttonPushed.getX()) / buttonPushed.getWidth();
+        y = (buttonPushed.getY()) / buttonPushed.getHeight();
+        coordinates.put(x, y);
+        return (HashMap) coordinates;
+    }
+
+    public HashMap searchingSurroundingOfEmptyNode () {
+        for (Object i : searchingForTheEmptyNode().keySet()) {
+            xEmpty = (int) i;
+            yEmpty = (int) searchingForTheEmptyNode().get(i);
+        }
+        mapSurrounding = new HashMap<>();
+        int k = 1;
+        for (int i = -1; i < 2; i++) {
+            for (int j = -1; j < 2; j++) {
+                if (i == 0 && j == 0) {}   //ничего не записывать
+                else if (xEmpty+i > 3) {}  //ничего не записывать
+                else if (xEmpty+i < 0) {}  //ничего не записывать
+                else if (yEmpty+j > 3) {}  //ничего не записывать
+                else if (yEmpty+j < 0) {}  //ничего не записывать
+                else {
+                    surrounding = new HashMap<>();
+                    surrounding.put(xEmpty+i, yEmpty+j);
+                    mapSurrounding.put(k, surrounding);
+                    k++;
+                }
+            }
+        }
+        return (HashMap) mapSurrounding;
+    }
 
     public void lalala () {
-        for (Integer i : mapNodes.keySet()) {
-            System.out.println(i + " " + mapNodes.get(i));
-        }
-        System.out.println("--------------");
-        for (Integer i : mapButtons.keySet()) {
-            System.out.println(i + " " + mapButtons.get(i));
-        }
-        System.out.println("=============");
+//        for (Integer i : mapNodes.keySet()) {
+//            System.out.println(i + " " + mapNodes.get(i));
+//        }
+//        System.out.println("--------------");
+//        for (Integer i : mapButtons.keySet()) {
+//            System.out.println(i + " " + mapButtons.get(i));
+//        }
+//        System.out.println("=============");
+
+//        System.out.println(searchingForTheEmptyNode());
     }
 
 
