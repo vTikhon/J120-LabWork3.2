@@ -21,7 +21,7 @@ public class Game extends JFrame implements MouseMotionListener {
         setLocationRelativeTo(null);
 //        Container container = new Container();
 //        container.setLayout(new GridLayout(4,4));
-        setLayout(new GridLayout(4,4));
+        setLayout(new GridLayout(4, 4));
 //        setLayout(null);
         initializationButtons();
     }
@@ -39,6 +39,80 @@ public class Game extends JFrame implements MouseMotionListener {
             button[i].addMouseMotionListener(this);
             add(button[i]);
         }
+//        GridBagConstraints position0 = new GridBagConstraints();
+//        position0.gridx = 0;
+//        position0.gridy = 0;
+//        add(button[0], position0);
+//
+//        GridBagConstraints position1 = new GridBagConstraints();
+//        position1.gridx = 1;
+//        position1.gridy = 0;
+//        add(button[1], position1);
+//
+//        GridBagConstraints position2 = new GridBagConstraints();
+//        position2.gridx = 2;
+//        position2.gridy = 0;
+//        add(button[2], position2);
+//
+//        GridBagConstraints position3 = new GridBagConstraints();
+//        position3.gridx = 3;
+//        position3.gridy = 0;
+//        add(button[3], position3);
+//
+//        GridBagConstraints position4 = new GridBagConstraints();
+//        position4.gridx = 0;
+//        position4.gridy = 1;
+//        add(button[4], position4);
+//
+//        GridBagConstraints position5 = new GridBagConstraints();
+//        position5.gridx = 1;
+//        position5.gridy = 1;
+//        add(button[5], position5);
+//
+//        GridBagConstraints position6 = new GridBagConstraints();
+//        position6.gridx = 2;
+//        position6.gridy = 1;
+//        add(button[6], position6);
+//
+//        GridBagConstraints position7 = new GridBagConstraints();
+//        position7.gridx = 3;
+//        position7.gridy = 1;
+//        add(button[7], position7);
+//
+//        GridBagConstraints position8 = new GridBagConstraints();
+//        position8.gridx = 0;
+//        position8.gridy = 2;
+//        add(button[8], position8);
+//
+//        GridBagConstraints position9 = new GridBagConstraints();
+//        position9.gridx = 1;
+//        position9.gridy = 2;
+//        add(button[9], position9);
+//
+//        GridBagConstraints position10 = new GridBagConstraints();
+//        position10.gridx = 2;
+//        position10.gridy = 2;
+//        add(button[10], position10);
+//
+//        GridBagConstraints position11 = new GridBagConstraints();
+//        position11.gridx = 3;
+//        position11.gridy = 2;
+//        add(button[11], position11);
+//
+//        GridBagConstraints position12 = new GridBagConstraints();
+//        position12.gridx = 0;
+//        position12.gridy = 3;
+//        add(button[12], position12);
+//
+//        GridBagConstraints position13 = new GridBagConstraints();
+//        position13.gridx = 1;
+//        position13.gridy = 3;
+//        add(button[13], position13);
+//
+//        GridBagConstraints position14 = new GridBagConstraints();
+//        position14.gridx = 2;
+//        position14.gridy = 3;
+//        add(button[14], position14);
     }
 
     @Override
@@ -56,9 +130,14 @@ public class Game extends JFrame implements MouseMotionListener {
             int mousePositionY = ((int) getMousePosition().getY() / 100) * 100;
             buttonPushed.setLocation(mousePositionX, mousePositionY);
         }
+        savingButtonCoordinatesInCollection();
+        if (!isThereOnlyOneEmptyNode()) {
+            setButtonOnPositions();
+        }
+
     }
 
-    public void savingButtonCoordinatesInCollection () {
+    public HashMap savingButtonCoordinatesInCollection () {
         mapButtons = new HashMap<>();
         int j = 1;
         for (JButton i : button) {
@@ -69,6 +148,7 @@ public class Game extends JFrame implements MouseMotionListener {
             mapButtons.put(j, coordinates);
             j++;
         }
+        return (HashMap) mapButtons;
     }
 
     public HashMap searchingForTheEmptyNode () {
@@ -123,6 +203,25 @@ public class Game extends JFrame implements MouseMotionListener {
             }
         }
         return (HashMap) mapSurrounding;
+    }
+
+    public boolean isThereOnlyOneEmptyNode () {
+        Map<Integer, Map<Integer, Integer>> mapButtonsTemp = new HashMap<>();
+        for (Object i : savingButtonCoordinatesInCollection().keySet()) {
+            if (!mapButtonsTemp.containsValue(savingButtonCoordinatesInCollection().get(i))) {
+                mapButtonsTemp.put((Integer) i, (Map<Integer, Integer>) savingButtonCoordinatesInCollection().get(i));
+            }
+        }
+        if (mapButtonsTemp.size() != 15) {
+            return false;
+        }
+        return true;
+    }
+
+    public void setButtonOnPositions () {
+        for (Object i : savingButtonCoordinatesInCollection().keySet()) {
+
+        }
     }
 
     public void lalala () {
