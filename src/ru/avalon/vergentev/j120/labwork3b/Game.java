@@ -8,7 +8,7 @@ import java.util.*;
 public class Game extends JFrame implements MouseMotionListener {
     JButton[] button = new JButton[15];
     String titleOfButton;
-    HashMap<JButton, HashMap<Integer, Integer>> mapButtons;
+    HashMap<JButton, HashMap<Integer, Integer>> mapButtons, gameOverButtons;
     HashMap<Integer, HashMap<Integer, Integer>> mapNodes, mapSurrounding;
     HashMap<Integer, Integer> coordinates, surrounding;
     int x, y, xEmpty, yEmpty;
@@ -20,7 +20,12 @@ public class Game extends JFrame implements MouseMotionListener {
         getContentPane().setBackground(new Color(180,180,180));
         setResizable(false);
         setLocationRelativeTo(null);
-        setLayout(new GridLayout(4, 4));
+//        JPanel jPanel = new JPanel();
+//        jPanel.setLayout(new GridLayout(4, 4));
+//        Container container = new Container();
+//        container.setLayout(new GridLayout(4, 4));
+//        setLayout(new GridLayout(4, 4));
+        setLayout(null);
         initializationButtons();
     }
 
@@ -30,12 +35,101 @@ public class Game extends JFrame implements MouseMotionListener {
         for (int i = 0; i < button.length; i++) {
             titleOfButton = Integer.toString(i+1);
             button[i] = new JButton(titleOfButton);
+            button[i].setName(titleOfButton);
             button[i].setFont(new Font("Segoe UI", Font.BOLD, 40));
             button[i].setBackground(new Color(255,255,255));
             button[i].setSize(100, 100);
             button[i].addMouseMotionListener(this);
+//            button[i].setLocation(100, 100);
             add(button[i]);
         }
+        button[0].setLocation(0 * button[0].getWidth(), 0 * button[0].getHeight());
+        button[1].setLocation(1 * button[1].getWidth(), 0 * button[1].getHeight());
+        button[2].setLocation(2 * button[2].getWidth(), 0 * button[2].getHeight());
+        button[3].setLocation(3 * button[3].getWidth(), 0 * button[3].getHeight());
+        button[4].setLocation(0 * button[4].getWidth(), 1 * button[4].getHeight());
+        button[5].setLocation(1 * button[5].getWidth(), 1 * button[5].getHeight());
+        button[6].setLocation(2 * button[6].getWidth(), 1 * button[6].getHeight());
+        button[7].setLocation(3 * button[7].getWidth(), 1 * button[7].getHeight());
+        button[8].setLocation(0 * button[8].getWidth(), 2 * button[8].getHeight());
+        button[9].setLocation(1 * button[9].getWidth(), 2 * button[9].getHeight());
+        button[10].setLocation(2 * button[10].getWidth(), 2 * button[10].getHeight());
+        button[11].setLocation(3 * button[11].getWidth(), 2* button[11].getHeight());
+        button[12].setLocation(0 * button[12].getWidth(), 3 * button[12].getHeight());
+        button[13].setLocation(1 * button[13].getWidth(), 3 * button[13].getHeight());
+        button[14].setLocation(3 * button[14].getWidth(), 3 * button[14].getHeight());
+
+//        GridBagConstraints position0 = new GridBagConstraints();
+//        position0.gridx = 0;
+//        position0.gridy = 0;
+//        GridBagConstraints position1 = new GridBagConstraints();
+//        position1.gridx = 0;
+//        position1.gridy = 1;
+//        GridBagConstraints position2 = new GridBagConstraints();
+//        position2.gridx = 0;
+//        position2.gridy = 2;
+//        GridBagConstraints position3 = new GridBagConstraints();
+//        position3.gridx = 0;
+//        position3.gridy = 3;
+//        GridBagConstraints position4 = new GridBagConstraints();
+//        position4.gridx = 0;
+//        position4.gridy = 0;
+//        GridBagConstraints position5 = new GridBagConstraints();
+//        position5.gridx = 0;
+//        position5.gridy = 0;
+//        GridBagConstraints position6 = new GridBagConstraints();
+//        position6.gridx = 0;
+//        position6.gridy = 0;
+//        GridBagConstraints position7 = new GridBagConstraints();
+//        position7.gridx = 0;
+//        position7.gridy = 0;
+//        GridBagConstraints position8 = new GridBagConstraints();
+//        position8.gridx = 0;
+//        position8.gridy = 0;
+//        GridBagConstraints position9 = new GridBagConstraints();
+//        position9.gridx = 0;
+//        position9.gridy = 0;
+//        GridBagConstraints position10 = new GridBagConstraints();
+//        position10.gridx = 0;
+//        position10.gridy = 0;
+//        GridBagConstraints position11 = new GridBagConstraints();
+//        position11.gridx = 0;
+//        position11.gridy = 0;
+//        GridBagConstraints position12 = new GridBagConstraints();
+//        position12.gridx = 0;
+//        position12.gridy = 0;
+//        GridBagConstraints position13 = new GridBagConstraints();
+//        position13.gridx = 0;
+//        position13.gridy = 0;
+//        GridBagConstraints position14 = new GridBagConstraints();
+//        position14.gridx = 0;
+//        position14.gridy = 0;
+
+
+//        add(button[0]);
+//        add(button[1]);
+//        add(button[2]);
+//        add(button[3]);
+//        add(button[4]);
+//        add(button[5]);
+//        add(button[6]);
+//        add(button[7]);
+//        add(button[8]);
+//        add(button[9]);
+//        add(button[10]);
+//        add(button[11]);
+//        add(button[12]);
+//        add(button[13]);
+//        add(button[14]);
+
+//        for (int i = 1; i < 5; i++) {
+//            for (int j = 1; j < 5; j++) {
+//                if (j != 4) {
+//                    button[i*j].setLocation(i * button[i*j].getWidth(), j * button[i*j].getHeight());
+//                    add(button[i*j]);
+//                }
+//            }
+//        }
     }
 
     @Override
@@ -46,20 +140,23 @@ public class Game extends JFrame implements MouseMotionListener {
     public void mouseMoved(MouseEvent e) {}
 
     public void algorithmIfButtonIsPushed (JButton buttonPushed) {
-        savingButtonsInCollection();
+        getButtonsCollection();
         //двигаем кнопки только которые вокруг пустого узла
-        if (availableSurroundingOfEmptyNode().containsValue(getButtonPushedCoordinates(buttonPushed))) {
+        if (availableSurroundingOfEmptyNode().containsValue(getButtonPushedCoordinates(buttonPushed)) && isThereOnlyOneEmptyNode()) {
             int mousePositionX = ((int) getMousePosition().getX() / 100) * 100;
             int mousePositionY = ((int) getMousePosition().getY() / 100) * 100;
             buttonPushed.setLocation(mousePositionX, mousePositionY);
-            savingButtonsInCollection();
-            if (!isThereOnlyOneEmptyNode()) {
-                setButtonOnPositions();
-            }
+        } else {
+            setButtonsByPositions();
         }
+        if (isGameOver()) {
+            gameOver();
+        }
+//        print();
     }
 
-    public HashMap<JButton, Map<Integer, Integer>> savingButtonsInCollection () {
+
+    public HashMap<JButton, HashMap<Integer, Integer>> getButtonsCollection () {
         mapButtons = new HashMap<>();
         for (JButton i : button) {
             coordinates = new HashMap<>();
@@ -67,8 +164,9 @@ public class Game extends JFrame implements MouseMotionListener {
             y = (i.getY()) / i.getHeight();
             coordinates.put(x, y);
             mapButtons.put(i, coordinates);
+//            System.out.println(i.getName());
         }
-        return (HashMap) mapButtons;
+        return mapButtons;
     }
 
     public HashMap<Integer, Integer> searchingForTheEmptyNode () {
@@ -128,93 +226,113 @@ public class Game extends JFrame implements MouseMotionListener {
 
     public boolean isThereOnlyOneEmptyNode () {
         Map<JButton, Map<Integer, Integer>> mapButtonsTemp = new HashMap<>();
-        for (JButton i : savingButtonsInCollection().keySet()) {
-            if (!mapButtonsTemp.containsValue(savingButtonsInCollection().get(i))) {
-                mapButtonsTemp.put(i, savingButtonsInCollection().get(i));
+        for (JButton i : getButtonsCollection().keySet()) {
+            if (!mapButtonsTemp.containsValue(getButtonsCollection().get(i))) {
+                mapButtonsTemp.put(i, getButtonsCollection().get(i));
             }
         }
-        if (mapButtonsTemp.size() != 15) {
-            return false;
-        }
-        return true;
+        return mapButtonsTemp.size() == 15;
     }
 
-    public void setButtonOnPositions () {
-        for (JButton i : savingButtonsInCollection().keySet()) {
-            for (Integer j : (savingButtonsInCollection().get(i)).keySet()) {
-                i.setLocation(j * i.getWidth(), (savingButtonsInCollection().get(i)).get(j) * i.getHeight());
-                System.out.println(i);
+    public void setButtonsByPositions () {
+        getButtonsCollection();
+        for (JButton i : getButtonsCollection().keySet()) {
+            for (Integer j : (getButtonsCollection().get(i)).keySet()) {
+                i.setLocation(j * i.getWidth(), (getButtonsCollection().get(i)).get(j) * i.getHeight());
             }
         }
+        getButtonsCollection();
     }
 
-    public void lalala () {
-//        for (Integer i : mapNodes.keySet()) {
-//            System.out.println(i + " " + mapNodes.get(i));
-//        }
-//        System.out.println("--------------");
-//        for (Integer i : mapButtons.keySet()) {
-//            System.out.println(i + " " + mapButtons.get(i));
-//        }
-//        System.out.println("=============");
-
-//        System.out.println(searchingForTheEmptyNode());
+    public HashMap<JButton, HashMap<Integer, Integer>> getGameOverPositions () {
+        getButtonsCollection();
+        gameOverButtons = new HashMap<>();
+        for (JButton i : getButtonsCollection().keySet()) {
+            if (i.getName().equals("1")) {
+                coordinates = new HashMap<>();
+                coordinates.put(0, 0);
+                gameOverButtons.put(i, coordinates);
+            } else if (i.getName().equals("2")) {
+                coordinates = new HashMap<>();
+                coordinates.put(1, 0);
+                gameOverButtons.put(i, coordinates);
+            } else if (i.getName().equals("3")) {
+                coordinates = new HashMap<>();
+                coordinates.put(2, 0);
+                gameOverButtons.put(i, coordinates);
+            } else if (i.getName().equals("4")) {
+                coordinates = new HashMap<>();
+                coordinates.put(3, 0);
+                gameOverButtons.put(i, coordinates);
+            } else if (i.getName().equals("5")) {
+                coordinates = new HashMap<>();
+                coordinates.put(0, 1);
+                gameOverButtons.put(i, coordinates);
+            } else if (i.getName().equals("6")) {
+                coordinates = new HashMap<>();
+                coordinates.put(1, 1);
+                gameOverButtons.put(i, coordinates);
+            } else if (i.getName().equals("7")) {
+                coordinates = new HashMap<>();
+                coordinates.put(2, 1);
+                gameOverButtons.put(i, coordinates);
+            } else if (i.getName().equals("8")) {
+                coordinates = new HashMap<>();
+                coordinates.put(3, 1);
+                gameOverButtons.put(i, coordinates);
+            } else if (i.getName().equals("9")) {
+                coordinates = new HashMap<>();
+                coordinates.put(0, 2);
+                gameOverButtons.put(i, coordinates);
+            } else if (i.getName().equals("10")) {
+                coordinates = new HashMap<>();
+                coordinates.put(1, 2);
+                gameOverButtons.put(i, coordinates);
+            } else if (i.getName().equals("11")) {
+                coordinates = new HashMap<>();
+                coordinates.put(2, 2);
+                gameOverButtons.put(i, coordinates);
+            } else if (i.getName().equals("12")) {
+                coordinates = new HashMap<>();
+                coordinates.put(3, 2);
+                gameOverButtons.put(i, coordinates);
+            } else if (i.getName().equals("13")) {
+                coordinates = new HashMap<>();
+                coordinates.put(0, 3);
+                gameOverButtons.put(i, coordinates);
+            } else if (i.getName().equals("14")) {
+                coordinates = new HashMap<>();
+                coordinates.put(1, 3);
+                gameOverButtons.put(i, coordinates);
+            } else if (i.getName().equals("15")) {
+                coordinates = new HashMap<>();
+                coordinates.put(2, 3);
+                gameOverButtons.put(i, coordinates);
+            }
+        }
+        return gameOverButtons;
     }
 
+    public boolean isGameOver () {
+        return getGameOverPositions().equals(getButtonsCollection());
+    }
 
+    public void gameOver () {
+        int GameOverWindow = JOptionPane.showConfirmDialog(null, "Do you want to exit?", "You are winner!", JOptionPane.OK_CANCEL_OPTION);
+        if (GameOverWindow == JOptionPane.OK_OPTION) {
+            this.dispose();
+        }
+    }
 
-//    public void searchingForTheEmptyNode (JButton buttonPushed) {
-//        for (int n = 0; n < 4; n++) {             //проходим...
-//            for (int m = 0; m < 4; m++) {         //...сетку 4х4
-//                coordinates = new HashMap<>();
-//                coordinates.put(n, m);            //создаём пару координат в аналогичную коллекцию, что координаты кнопки
-//                for (JButton i : button) {        //для каждого узла сетки 4х4 проходим по всему списку координат кнопок
-//                    if (map.get(i) == coordinates) {         //если координаты кнопки совпадают с узлом сетки 4х4, то это пустая ячейка
-//                        xEmpty = n;
-//                        yEmpty = m;
-//                    }
-//                }
-//                coordinates.clear();
-//            }
-//        }
-////        System.out.println(xEmpty + ", " + yEmpty);
-//    }
-
-
-
-
-//    @Override
-//    public void actionPerformed(ActionEvent e) {
-//        for (JButton i : button) {
-//            if (e.getSource() == i) algorithmIfButtonIsPushed(i);
-//        }
-//    }
-
-//    public void algorithmIfButtonIsPushed (JButton buttonPushed) {
-//        searchingForTheEmptyNode(buttonPushed);
-//        System.out.println("old x, y = " + buttonPushed.getX() + ", " + buttonPushed.getY());
-//        System.out.println("Empty " + xEmpty + ", " + yEmpty);
-//        buttonPushed.setLocation(xEmpty, yEmpty);
-//        System.out.println("new x, y = " + buttonPushed.getX() + ", " + buttonPushed.getY());
-//
-//        for (int n = 0; n < 4; n++) {
-//            for (int m = 0; m < 4; m++) {
-//                for (JButton i : button) {
-//                    x = (i.getX()) / i.getWidth();
-//                    y = (i.getY()) / i.getHeight();
-//                    if (n != x) {
-//                        xEmpty = n*buttonPushed.getWidth();
-//                    } else if (m != y) {
-//                        yEmpty = m*buttonPushed.getHeight();
-//                    }
-//                }
-//            }
-//        }
-//        System.out.println("Empty " + xEmpty + ", " + yEmpty);
-//    }
-
-
-
-
-
+    public void print () {
+        System.out.println("----------------");
+        for (JButton i : getButtonsCollection().keySet()) {
+            System.out.println(getGameOverPositions().get(i));
+        }
+        System.out.println("================");
+        for (JButton i : getButtonsCollection().keySet()) {
+            System.out.println(getButtonsCollection().get(i));
+        }
+        System.out.println(getGameOverPositions().equals(getButtonsCollection()));
+    }
 }
