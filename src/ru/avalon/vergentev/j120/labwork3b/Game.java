@@ -95,6 +95,7 @@ public class Game extends JFrame implements MouseMotionListener {
         }
     }
 
+
     public void lalala () {
         for (Integer i : mapNodes.keySet()) {
             System.out.println(i + " " + mapNodes.get(i));
