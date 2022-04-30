@@ -8,9 +8,10 @@ import java.util.*;
 public class Game extends JFrame implements MouseMotionListener {
     JButton[] button = new JButton[15];
     String titleOfButton;
-    Map<Integer, Integer> coordinates, surrounding;
-    Map<Integer, Map<Integer, Integer>> mapButtons, mapNodes, mapSurrounding;
-    int x, y, xEmpty, yEmpty, width, height;
+    HashMap<JButton, HashMap<Integer, Integer>> mapButtons;
+    HashMap<Integer, HashMap<Integer, Integer>> mapNodes, mapSurrounding;
+    HashMap<Integer, Integer> coordinates, surrounding;
+    int x, y, xEmpty, yEmpty;
 
     public Game () {
         super("Tikhon's Game15");
@@ -19,10 +20,7 @@ public class Game extends JFrame implements MouseMotionListener {
         getContentPane().setBackground(new Color(180,180,180));
         setResizable(false);
         setLocationRelativeTo(null);
-//        Container container = new Container();
-//        container.setLayout(new GridLayout(4,4));
         setLayout(new GridLayout(4, 4));
-//        setLayout(null);
         initializationButtons();
     }
 
@@ -34,85 +32,10 @@ public class Game extends JFrame implements MouseMotionListener {
             button[i] = new JButton(titleOfButton);
             button[i].setFont(new Font("Segoe UI", Font.BOLD, 40));
             button[i].setBackground(new Color(255,255,255));
-//            button[i].setLocation(0, 0);
             button[i].setSize(100, 100);
             button[i].addMouseMotionListener(this);
             add(button[i]);
         }
-//        GridBagConstraints position0 = new GridBagConstraints();
-//        position0.gridx = 0;
-//        position0.gridy = 0;
-//        add(button[0], position0);
-//
-//        GridBagConstraints position1 = new GridBagConstraints();
-//        position1.gridx = 1;
-//        position1.gridy = 0;
-//        add(button[1], position1);
-//
-//        GridBagConstraints position2 = new GridBagConstraints();
-//        position2.gridx = 2;
-//        position2.gridy = 0;
-//        add(button[2], position2);
-//
-//        GridBagConstraints position3 = new GridBagConstraints();
-//        position3.gridx = 3;
-//        position3.gridy = 0;
-//        add(button[3], position3);
-//
-//        GridBagConstraints position4 = new GridBagConstraints();
-//        position4.gridx = 0;
-//        position4.gridy = 1;
-//        add(button[4], position4);
-//
-//        GridBagConstraints position5 = new GridBagConstraints();
-//        position5.gridx = 1;
-//        position5.gridy = 1;
-//        add(button[5], position5);
-//
-//        GridBagConstraints position6 = new GridBagConstraints();
-//        position6.gridx = 2;
-//        position6.gridy = 1;
-//        add(button[6], position6);
-//
-//        GridBagConstraints position7 = new GridBagConstraints();
-//        position7.gridx = 3;
-//        position7.gridy = 1;
-//        add(button[7], position7);
-//
-//        GridBagConstraints position8 = new GridBagConstraints();
-//        position8.gridx = 0;
-//        position8.gridy = 2;
-//        add(button[8], position8);
-//
-//        GridBagConstraints position9 = new GridBagConstraints();
-//        position9.gridx = 1;
-//        position9.gridy = 2;
-//        add(button[9], position9);
-//
-//        GridBagConstraints position10 = new GridBagConstraints();
-//        position10.gridx = 2;
-//        position10.gridy = 2;
-//        add(button[10], position10);
-//
-//        GridBagConstraints position11 = new GridBagConstraints();
-//        position11.gridx = 3;
-//        position11.gridy = 2;
-//        add(button[11], position11);
-//
-//        GridBagConstraints position12 = new GridBagConstraints();
-//        position12.gridx = 0;
-//        position12.gridy = 3;
-//        add(button[12], position12);
-//
-//        GridBagConstraints position13 = new GridBagConstraints();
-//        position13.gridx = 1;
-//        position13.gridy = 3;
-//        add(button[13], position13);
-//
-//        GridBagConstraints position14 = new GridBagConstraints();
-//        position14.gridx = 2;
-//        position14.gridy = 3;
-//        add(button[14], position14);
     }
 
     @Override
@@ -123,73 +46,71 @@ public class Game extends JFrame implements MouseMotionListener {
     public void mouseMoved(MouseEvent e) {}
 
     public void algorithmIfButtonIsPushed (JButton buttonPushed) {
-        savingButtonCoordinatesInCollection();
+        savingButtonsInCollection();
         //двигаем кнопки только которые вокруг пустого узла
-        if (searchingSurroundingOfEmptyNode().containsValue(getButtonPushedCoordinates(buttonPushed))) {
+        if (availableSurroundingOfEmptyNode().containsValue(getButtonPushedCoordinates(buttonPushed))) {
             int mousePositionX = ((int) getMousePosition().getX() / 100) * 100;
             int mousePositionY = ((int) getMousePosition().getY() / 100) * 100;
             buttonPushed.setLocation(mousePositionX, mousePositionY);
+            savingButtonsInCollection();
+            if (!isThereOnlyOneEmptyNode()) {
+                setButtonOnPositions();
+            }
         }
-        savingButtonCoordinatesInCollection();
-        if (!isThereOnlyOneEmptyNode()) {
-            setButtonOnPositions();
-        }
-
     }
 
-    public HashMap savingButtonCoordinatesInCollection () {
+    public HashMap<JButton, Map<Integer, Integer>> savingButtonsInCollection () {
         mapButtons = new HashMap<>();
-        int j = 1;
         for (JButton i : button) {
             coordinates = new HashMap<>();
             x = (i.getX()) / i.getWidth();
             y = (i.getY()) / i.getHeight();
             coordinates.put(x, y);
-            mapButtons.put(j, coordinates);
-            j++;
+            mapButtons.put(i, coordinates);
         }
         return (HashMap) mapButtons;
     }
 
-    public HashMap searchingForTheEmptyNode () {
+    public HashMap<Integer, Integer> searchingForTheEmptyNode () {
         //формируем коллекцию узлов по аналогии с коллекцией кнопок
         mapNodes = new HashMap<>();
         int j = 1;
         for (int n = 0; n < 4; n++) {             //проходим...
             for (int m = 0; m < 4; m++) {         //...сетку 4х4
                 coordinates = new HashMap<>();
-                coordinates.put(m, n);            //создаём пару координат в аналогичную коллекцию, что координаты кнопки
-                mapNodes.put(j, coordinates);
+                coordinates.put(m, n);
+                mapNodes.put(j, coordinates);            //создаём пару координат в аналогичную коллекцию, что координаты кнопки
                 j++;
             }
         }
         //сравниваем коллекции кнопок и узлов
         for (Integer i : mapNodes.keySet()) {
             if (!(mapButtons.containsValue(mapNodes.get(i)))) {
-                return (HashMap) mapNodes.get(i);
+                return mapNodes.get(i);
             }
         }
         return null;
     }
 
-    public HashMap getButtonPushedCoordinates (JButton buttonPushed) {
+    public HashMap<Integer, Integer> getButtonPushedCoordinates (JButton buttonPushed) {
         coordinates = new HashMap<>();
         x = (buttonPushed.getX()) / buttonPushed.getWidth();
         y = (buttonPushed.getY()) / buttonPushed.getHeight();
         coordinates.put(x, y);
-        return (HashMap) coordinates;
+        return coordinates;
     }
 
-    public HashMap searchingSurroundingOfEmptyNode () {
-        for (Object i : searchingForTheEmptyNode().keySet()) {
-            xEmpty = (int) i;
-            yEmpty = (int) searchingForTheEmptyNode().get(i);
+    public HashMap<Integer, HashMap<Integer, Integer>> availableSurroundingOfEmptyNode () {
+        for (Integer i : searchingForTheEmptyNode().keySet()) {
+            xEmpty = i;
+            yEmpty = searchingForTheEmptyNode().get(i);
         }
         mapSurrounding = new HashMap<>();
         int k = 1;
         for (int i = -1; i < 2; i++) {
             for (int j = -1; j < 2; j++) {
-                if (i == 0 && j == 0) {}   //ничего не записывать
+                if  (i == 0 && j == 0) {}  //ничего не записывать
+                else if ((Math.abs(i) + Math.abs(j)) / 2 == 1) {}  //ничего не записывать
                 else if (xEmpty+i > 3) {}  //ничего не записывать
                 else if (xEmpty+i < 0) {}  //ничего не записывать
                 else if (yEmpty+j > 3) {}  //ничего не записывать
@@ -202,14 +123,14 @@ public class Game extends JFrame implements MouseMotionListener {
                 }
             }
         }
-        return (HashMap) mapSurrounding;
+        return mapSurrounding;
     }
 
     public boolean isThereOnlyOneEmptyNode () {
-        Map<Integer, Map<Integer, Integer>> mapButtonsTemp = new HashMap<>();
-        for (Object i : savingButtonCoordinatesInCollection().keySet()) {
-            if (!mapButtonsTemp.containsValue(savingButtonCoordinatesInCollection().get(i))) {
-                mapButtonsTemp.put((Integer) i, (Map<Integer, Integer>) savingButtonCoordinatesInCollection().get(i));
+        Map<JButton, Map<Integer, Integer>> mapButtonsTemp = new HashMap<>();
+        for (JButton i : savingButtonsInCollection().keySet()) {
+            if (!mapButtonsTemp.containsValue(savingButtonsInCollection().get(i))) {
+                mapButtonsTemp.put(i, savingButtonsInCollection().get(i));
             }
         }
         if (mapButtonsTemp.size() != 15) {
@@ -219,8 +140,11 @@ public class Game extends JFrame implements MouseMotionListener {
     }
 
     public void setButtonOnPositions () {
-        for (Object i : savingButtonCoordinatesInCollection().keySet()) {
-
+        for (JButton i : savingButtonsInCollection().keySet()) {
+            for (Integer j : (savingButtonsInCollection().get(i)).keySet()) {
+                i.setLocation(j * i.getWidth(), (savingButtonsInCollection().get(i)).get(j) * i.getHeight());
+                System.out.println(i);
+            }
         }
     }
 
@@ -236,6 +160,7 @@ public class Game extends JFrame implements MouseMotionListener {
 
 //        System.out.println(searchingForTheEmptyNode());
     }
+
 
 
 //    public void searchingForTheEmptyNode (JButton buttonPushed) {
