@@ -3,7 +3,6 @@ package ru.avalon.vergentev.j120.labwork3b;
 import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
-import java.time.Year;
 import java.util.*;
 
 public class Game extends JFrame implements MouseMotionListener {
@@ -20,12 +19,15 @@ public class Game extends JFrame implements MouseMotionListener {
         getContentPane().setBackground(new Color(180,180,180));
         setResizable(false);
         setLocationRelativeTo(null);
+//        Container container = new Container();
+//        container.setLayout(new GridLayout(4,4));
         setLayout(new GridLayout(4,4));
 //        setLayout(null);
         initializationButtons();
     }
 
     //METHODS
+    //определяем внешний вид кнопок и добавляем на сетку
     public void initializationButtons () {
         for (int i = 0; i < button.length; i++) {
             titleOfButton = Integer.toString(i+1);
@@ -48,7 +50,7 @@ public class Game extends JFrame implements MouseMotionListener {
 
     public void algorithmIfButtonIsPushed (JButton buttonPushed) {
         savingButtonCoordinatesInCollection();
-        //двигаем кнопки только которые вокруг пустой кнопки
+        //двигаем кнопки только которые вокруг пустого узла
         if (searchingSurroundingOfEmptyNode().containsValue(getButtonPushedCoordinates(buttonPushed))) {
             int mousePositionX = ((int) getMousePosition().getX() / 100) * 100;
             int mousePositionY = ((int) getMousePosition().getY() / 100) * 100;
@@ -66,7 +68,6 @@ public class Game extends JFrame implements MouseMotionListener {
             coordinates.put(x, y);
             mapButtons.put(j, coordinates);
             j++;
-//            System.out.println(map.get(i));
         }
     }
 
