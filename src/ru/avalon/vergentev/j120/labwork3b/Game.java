@@ -31,7 +31,7 @@ public class Game extends JFrame implements MouseMotionListener {
             button[i] = new JButton(titleOfButton);
             button[i].setName(titleOfButton);
             button[i].setFont(new Font("Segoe UI", Font.BOLD, 40));
-            button[i].setBackground(new Color(255,255,255));
+            button[i].setBackground(new Color(50,255,50));
             button[i].setSize(100, 100);
             button[i].addMouseMotionListener(this);
             add(button[i]);
@@ -39,7 +39,7 @@ public class Game extends JFrame implements MouseMotionListener {
         setButtonStartPositions();
     }
 
-    //метод задающий стартовую позицию расположения кнопок
+    //метод задающий стартовую позицию расположения кнопок (удобно для проверки)
     public void setButtonStartPositions () {
         button[0].setLocation(0 * button[0].getWidth(), 0 * button[0].getHeight());
         button[1].setLocation(1 * button[1].getWidth(), 0 * button[1].getHeight());
