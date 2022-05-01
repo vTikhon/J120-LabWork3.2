@@ -42,6 +42,10 @@ public class Game extends JFrame implements MouseMotionListener {
             button[i].addMouseMotionListener(this);
             add(button[i]);
         }
+        setButtonStartPositions();
+    }
+
+    public void setButtonStartPositions () {
         //устанавливаем стартовую позицию расположения кнопок
         button[0].setLocation(0 * button[0].getWidth(), 0 * button[0].getHeight());
         button[1].setLocation(1 * button[1].getWidth(), 0 * button[1].getHeight());
@@ -56,55 +60,8 @@ public class Game extends JFrame implements MouseMotionListener {
         button[10].setLocation(2 * button[10].getWidth(), 2 * button[10].getHeight());
         button[11].setLocation(3 * button[11].getWidth(), 2* button[11].getHeight());
         button[12].setLocation(0 * button[12].getWidth(), 3 * button[12].getHeight());
-        button[13].setLocation(1 * button[13].getWidth(), 3 * button[13].getHeight());
+        button[13].setLocation(2 * button[13].getWidth(), 3 * button[13].getHeight());
         button[14].setLocation(3 * button[14].getWidth(), 3 * button[14].getHeight());
-
-//        GridBagConstraints position0 = new GridBagConstraints();
-//        position0.gridx = 0;
-//        position0.gridy = 0;
-//        GridBagConstraints position1 = new GridBagConstraints();
-//        position1.gridx = 0;
-//        position1.gridy = 1;
-//        GridBagConstraints position2 = new GridBagConstraints();
-//        position2.gridx = 0;
-//        position2.gridy = 2;
-//        GridBagConstraints position3 = new GridBagConstraints();
-//        position3.gridx = 0;
-//        position3.gridy = 3;
-//        GridBagConstraints position4 = new GridBagConstraints();
-//        position4.gridx = 0;
-//        position4.gridy = 0;
-//        GridBagConstraints position5 = new GridBagConstraints();
-//        position5.gridx = 0;
-//        position5.gridy = 0;
-//        GridBagConstraints position6 = new GridBagConstraints();
-//        position6.gridx = 0;
-//        position6.gridy = 0;
-//        GridBagConstraints position7 = new GridBagConstraints();
-//        position7.gridx = 0;
-//        position7.gridy = 0;
-//        GridBagConstraints position8 = new GridBagConstraints();
-//        position8.gridx = 0;
-//        position8.gridy = 0;
-//        GridBagConstraints position9 = new GridBagConstraints();
-//        position9.gridx = 0;
-//        position9.gridy = 0;
-//        GridBagConstraints position10 = new GridBagConstraints();
-//        position10.gridx = 0;
-//        position10.gridy = 0;
-//        GridBagConstraints position11 = new GridBagConstraints();
-//        position11.gridx = 0;
-//        position11.gridy = 0;
-//        GridBagConstraints position12 = new GridBagConstraints();
-//        position12.gridx = 0;
-//        position12.gridy = 0;
-//        GridBagConstraints position13 = new GridBagConstraints();
-//        position13.gridx = 0;
-//        position13.gridy = 0;
-//        GridBagConstraints position14 = new GridBagConstraints();
-//        position14.gridx = 0;
-//        position14.gridy = 0;
-
     }
 
     @Override
@@ -297,6 +254,8 @@ public class Game extends JFrame implements MouseMotionListener {
         int GameOverWindow = JOptionPane.showConfirmDialog(null, "Do you want to exit?", "You are winner!", JOptionPane.OK_CANCEL_OPTION);
         if (GameOverWindow == JOptionPane.OK_OPTION) {
             this.dispose();
+        } else {
+            setButtonStartPositions();
         }
     }
 
