@@ -7,7 +7,7 @@ import java.util.*;
 public class Game extends JFrame implements MouseMotionListener {
     JButton[] button = new JButton[15];
     String titleOfButton;
-    HashMap<JButton, HashMap<Integer, Integer>> mapButtons, gameOverButtons;
+    HashMap<JButton, HashMap<Integer, Integer>> mapButtons, gameOverButtons, mapButtonsClone;
     HashMap<Integer, HashMap<Integer, Integer>> mapNodes, mapSurrounding;
     HashMap<Integer, Integer> coordinates, surrounding;
     int x, y, xEmpty, yEmpty;
@@ -19,11 +19,6 @@ public class Game extends JFrame implements MouseMotionListener {
         getContentPane().setBackground(new Color(180,180,180));
         setResizable(false);
         setLocationRelativeTo(null);
-//        JPanel jPanel = new JPanel();
-//        jPanel.setLayout(new GridLayout(4, 4));
-//        Container container = new Container();
-//        container.setLayout(new GridLayout(4, 4));
-//        setLayout(new GridLayout(4, 4));
         setLayout(null);
         initializationButtons();
     }
@@ -73,13 +68,15 @@ public class Game extends JFrame implements MouseMotionListener {
     public void algorithmIfButtonIsPushed (JButton buttonPushed) {
         //записываем текущее расположение кнопок в коллекцию
         getButtonsCollection();
+        //делаем копию расположения кнопок для метода setButtonsByPositions();
+        mapButtonsClone = getButtonsCollection();
         //разрешаем двигать кнопки, которые располагаются в определённых позициях вокруг пустого узла...
         //... И при это добавляем ещё условие проверки будет ли только одна ячейка пустой
         if (availableSurroundingOfEmptyNode().containsValue(getButtonPushedCoordinates(buttonPushed)) && isThereOnlyOneEmptyNode()) {
             moveButtonInDiscretePositions(buttonPushed);
-        } else {
-            setButtonsByPositions();  //если не одна ячейка делаем возврат позиций
-//            print();
+        }
+        if (!isThereOnlyOneEmptyNode()) {
+            setButtonsByPositions();             //если не одна ячейка делаем возврат позиций
         }
         //проверяем закончена ли игра
         if (isGameOver()) {
@@ -180,11 +177,12 @@ public class Game extends JFrame implements MouseMotionListener {
 
     //метод устанавливающий позиции кнопок (нужен в комбинации если пустой узел не один, то есть кнопки наложены друг на друга)
     public void setButtonsByPositions () {
-        for (JButton i : getButtonsCollection().keySet()) {
-            for (Integer j : (getButtonsCollection().get(i)).keySet()) {
-                i.setLocation(j * i.getWidth(), (getButtonsCollection().get(i)).get(j) * i.getHeight());
+        for (JButton i : mapButtonsClone.keySet()) {
+            for (Integer j : (mapButtonsClone.get(i)).keySet()) {
+                i.setLocation(j * i.getWidth(), (mapButtonsClone.get(i)).get(j) * i.getHeight());
             }
         }
+//        setButtonStartPositions();
     }
 
     //метод проверки закончена ли игра или нет
@@ -267,17 +265,5 @@ public class Game extends JFrame implements MouseMotionListener {
         } else {
             setButtonStartPositions();
         }
-    }
-
-    public void print () {
-        System.out.println("----------------");
-//        for (JButton i : getButtonsCollection().keySet()) {
-//            System.out.println(getGameOverPositions().get(i));
-//        }
-//        System.out.println("================");
-//        for (JButton i : getButtonsCollection().keySet()) {
-//            System.out.println(getButtonsCollection().get(i));
-//        }
-//        System.out.println(getGameOverPositions().equals(getButtonsCollection()));
     }
 }
